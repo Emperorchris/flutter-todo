@@ -1,0 +1,33 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_todo/src/feature/home/domain/task.dart';
+
+final taskServiceProvider = NotifierProvider<TaskService, Tasks>(TaskService.new);
+
+class TaskService extends Notifier<Tasks> {
+  @override
+  build() {
+    return Tasks(tasks: []);
+  }
+
+  Future<Tasks> createTask(Item task) {
+    state = state.copyWith(tasks: [...state.tasks, task]);
+
+    return Future.value(state);
+  }
+
+  Future<Tasks> deleteTask(String taskId) {
+    state = state.copyWith(
+        tasks: state.tasks.where((task) => task.id != taskId).toList());
+
+    return Future.value(state);
+  }
+
+
+  Future<Tasks> updateTask(Item task) {
+    state = state.copyWith(
+      tasks: state.tasks.map((t) => t.id == task.id ? task : t).toList(),
+    );
+
+    return Future.value(state);
+  }
+}
