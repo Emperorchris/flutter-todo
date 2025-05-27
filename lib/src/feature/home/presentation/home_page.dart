@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_todo/src/feature/home/domain/task.dart';
 import 'package:riverpod_todo/src/feature/home/presentation/create_task_page.dart';
+import 'package:riverpod_todo/src/feature/home/presentation/providers/home_page_provider.dart';
+import 'package:riverpod_todo/src/feature/home/presentation/widgets/no_task_body.dart';
+import 'package:riverpod_todo/src/feature/home/presentation/widgets/task_body.dart';
+import 'package:riverpod_todo/src/services/task_service.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -12,28 +17,27 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(homePageControllerProvider);
     return Scaffold(
       appBar: AppBar(title: const Text('Simple Task Manager')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'No tasks yet!',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Center(
+              child:
+                  state.todos.isEmpty
+                      ? NoTaskBody()
+                      : TaskBody(todos: state.todos),
             ),
-            // const SizedBox(height: 5),
-            const Text(
-              'Press the button below to add a new task.',
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 20),
-            // Here you can add more widgets or functionality as needed
-          ],
-        ),
+          ),
+
+          if (state.isLoading) const Center(child: CircularProgressIndicator()),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          // ref.read(homePageControllerProvider.notifier).addTodo();
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const CreateTaskPage()),

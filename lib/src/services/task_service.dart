@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_todo/src/feature/home/domain/task.dart';
 
-final taskServiceProvider = NotifierProvider<TaskService, Tasks>(TaskService.new);
+final taskServiceProvider = NotifierProvider<TaskService, Tasks>(
+  TaskService.new,
+);
 
 class TaskService extends Notifier<Tasks> {
   @override
@@ -9,19 +11,20 @@ class TaskService extends Notifier<Tasks> {
     return Tasks(tasks: []);
   }
 
-  Future<Tasks> createTask(Item task) {
+  Future<Tasks> createTask(Item task) async {
     state = state.copyWith(tasks: [...state.tasks, task]);
-
+    //wait 5 secs
+    await Future.delayed(const Duration(seconds: 5));
     return Future.value(state);
   }
 
   Future<Tasks> deleteTask(String taskId) {
     state = state.copyWith(
-        tasks: state.tasks.where((task) => task.id != taskId).toList());
+      tasks: state.tasks.where((task) => task.id != taskId).toList(),
+    );
 
     return Future.value(state);
   }
-
 
   Future<Tasks> updateTask(Item task) {
     state = state.copyWith(
