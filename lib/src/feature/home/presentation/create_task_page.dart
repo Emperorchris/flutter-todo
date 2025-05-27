@@ -4,7 +4,6 @@ import 'package:riverpod_todo/src/feature/home/domain/task.dart';
 import 'package:riverpod_todo/src/feature/home/presentation/providers/create_task_provider.dart';
 import 'package:riverpod_todo/src/services/task_service.dart';
 
-
 class CreateTaskPage extends ConsumerStatefulWidget {
   const CreateTaskPage({super.key});
 
@@ -20,13 +19,25 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
   @override
   void initState() {
     super.initState();
+
+    // update the state of the controller
+
+    //initialize the widget text from the task editing
     descriptionController.text = "hello";
-    // titleController = TextEditingController();
-    // descriptionController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    titleController.dispose();
+    descriptionController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    //use the state of controller to know if the task is created or not
+    //build the ui appriopriately
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -65,14 +76,14 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
                   isCompleted: false,
                 );
 
-               await  ref
+                await ref
                     .read(createTaskControllerProvider.notifier)
                     .createTask(task);
 
                 Navigator.pop(context); // Go back after creating the task
               },
               child:
-                  ref.watch(createTaskControllerProvider)
+                  ref.watch(createTaskControllerProvider).isLoading
                       ? const CircularProgressIndicator()
                       : const Text('Create Task'),
             ),
