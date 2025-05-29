@@ -15,7 +15,7 @@ class TaskService extends Notifier<Tasks> {
     task.copyWith(id: "${state.tasks.length + 1}");
     state = state.copyWith(tasks: [...state.tasks, task]);
     //wait 5 secs
-    await Future.delayed(const Duration(seconds: 5));
+    await Future.delayed(const Duration(seconds: 2));
     return Future.value(state);
   }
 

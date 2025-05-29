@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:riverpod_todo/src/feature/home/domain/task.dart';
 import 'package:riverpod_todo/src/feature/home/presentation/providers/create_task_provider.dart';
-import 'package:riverpod_todo/src/services/task_service.dart';
 
-class CreateTaskPage extends ConsumerStatefulWidget {
-  
-  final String taskLength;
-  const CreateTaskPage({super.key, 
-    required this.taskLength,
-  });
+class EditTaskPage extends ConsumerStatefulWidget {
+  final Item task;
+  const EditTaskPage({super.key, required this.task});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _CreateTaskPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _EditTaskPageState();
 }
 
-class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
-  //create text editing contrllers
+class _EditTaskPageState extends ConsumerState<EditTaskPage> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
 
@@ -28,7 +22,8 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
     // update the state of the controller
 
     //initialize the widget text from the task editing
-    descriptionController.text = "hello";
+    descriptionController.text = widget.task.description;
+    titleController.text = widget.task.title;
   }
 
   @override
@@ -44,14 +39,14 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
     //use the state of controller to know if the task is created or not
     //build the ui appriopriately
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Task')),
+      appBar: AppBar(title: const Text('Edit Task')),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'Create a New Task',
+              'Edit Task',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
@@ -76,7 +71,7 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
               onPressed: () async {
                 // Logic to create a new task goes here
                 final task = Item(
-                  id: (int.parse(widget.taskLength) + 1).toString(),
+                  id: widget.task.id,
                   title: titleController.text,
                   description: descriptionController.text,
                   isCompleted: false,
@@ -84,14 +79,14 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
 
                 await ref
                     .read(createTaskControllerProvider.notifier)
-                    .createTask(task);
+                    .updateTask(task);
 
                 Navigator.pop(context); // Go back after creating the task
               },
               child:
                   ref.watch(createTaskControllerProvider).isLoading
                       ? const CircularProgressIndicator()
-                      : const Text('Create Task'),
+                      : const Text('Edit Task'),
             ),
           ],
         ),

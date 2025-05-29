@@ -40,7 +40,9 @@ class _HomePageState extends ConsumerState<HomePage> {
           // ref.read(homePageControllerProvider.notifier).addTodo();
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const CreateTaskPage()),
+            MaterialPageRoute(
+              builder: (context) => CreateTaskPage(taskLength: state.todos.length.toString(),),
+            ),
           );
         },
         tooltip: 'Add Task',

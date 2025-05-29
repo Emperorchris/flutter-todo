@@ -1,4 +1,3 @@
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_todo/src/feature/home/domain/task.dart';
 import 'package:riverpod_todo/src/services/task_service.dart';
@@ -14,6 +13,17 @@ class HomePageController extends Notifier<HomePageState> {
     final tasks = ref.watch(taskServiceProvider);
 
     return (todos: tasks.tasks, isLoading: false);
+  }
+
+  void deleteTask(String taskId) async {
+    state = (todos: state.todos, isLoading: true);
+
+    await ref.read(taskServiceProvider.notifier).deleteTask(taskId);
+
+    state = (
+      todos: state.todos.where((task) => task.id != taskId).toList(),
+      isLoading: false,
+    );
   }
 
   // void addTodo() async {
