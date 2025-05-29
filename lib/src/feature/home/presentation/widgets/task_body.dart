@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_todo/src/feature/home/domain/task.dart';
+import 'package:riverpod_todo/src/feature/home/presentation/create_task_page.dart';
 import 'package:riverpod_todo/src/feature/home/presentation/edit_task_page.dart';
 
 class TaskBody extends StatelessWidget {
@@ -17,7 +18,7 @@ class TaskBody extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => EditTaskPage(task: todos[index]),
+                builder: (context) => CreateTaskPage(item: todos[index]),
               ),
             );
           },

@@ -41,8 +41,8 @@ class _HomePageState extends ConsumerState<HomePage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CreateTaskPage(taskLength: state.todos.length.toString(),),
-            ),
+              builder: (context) => CreateTaskPage(),),
+            
           );
         },
         tooltip: 'Add Task',
