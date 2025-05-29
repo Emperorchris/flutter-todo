@@ -18,13 +18,13 @@ class CreateTaskState {
 }
 
 final createTaskControllerProvider =
-    NotifierProvider<CreateTaskController, CreateTaskState>(
+    NotifierProvider.autoDispose<CreateTaskController, CreateTaskState>(
       CreateTaskController.new,
     );
 
 //create controller for this page using notifier
 
-class CreateTaskController extends Notifier<CreateTaskState> {
+class CreateTaskController extends AutoDisposeNotifier<CreateTaskState> {
   @override
   CreateTaskState build() {
     return CreateTaskState(isLoading: false, isNewTask: true);
