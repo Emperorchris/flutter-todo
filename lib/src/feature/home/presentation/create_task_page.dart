@@ -6,11 +6,8 @@ import 'package:riverpod_todo/src/feature/home/presentation/providers/create_tas
 import 'package:riverpod_todo/src/services/task_service.dart';
 
 class CreateTaskPage extends ConsumerStatefulWidget {
-  
-  final String taskLength;
-  const CreateTaskPage({super.key, 
-    required this.taskLength,
-  });
+  final Item? item;
+  const CreateTaskPage({super.key, this.item});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _CreateTaskPageState();
@@ -28,7 +25,8 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
     // update the state of the controller
 
     //initialize the widget text from the task editing
-    descriptionController.text = "hello";
+    descriptionController.text = widget.item?.description ?? '';
+    titleController.text = widget.item?.title ?? '';
   }
 
   @override
@@ -44,14 +42,16 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
     //use the state of controller to know if the task is created or not
     //build the ui appriopriately
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Task')),
+      appBar: AppBar(
+        title: Text(widget.item == null ? 'Create Task' : 'Edit Task'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'Create a New Task',
+            Text(
+              widget.item == null ? 'Create a New Task' : 'Edit Task',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
@@ -76,22 +76,30 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
               onPressed: () async {
                 // Logic to create a new task goes here
                 final task = Item(
-                  id: (int.parse(widget.taskLength) + 1).toString(),
+                  id: 'id',
                   title: titleController.text,
                   description: descriptionController.text,
                   isCompleted: false,
                 );
 
-                await ref
-                    .read(createTaskControllerProvider.notifier)
-                    .createTask(task);
+                if (widget.item == null) {
+                  await ref
+                      .read(createTaskControllerProvider.notifier)
+                      .createTask(task);
+                } else {
+                  await ref
+                      .read(createTaskControllerProvider.notifier)
+                      .updateTask(task);
+                }
 
                 Navigator.pop(context); // Go back after creating the task
               },
               child:
                   ref.watch(createTaskControllerProvider).isLoading
                       ? const CircularProgressIndicator()
-                      : const Text('Create Task'),
+                      : Text(
+                        widget.item == null ? 'Create Task' : 'Update Task',
+                      ),
             ),
           ],
         ),

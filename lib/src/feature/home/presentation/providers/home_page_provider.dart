@@ -10,9 +10,12 @@ final homePageControllerProvider =
 class HomePageController extends Notifier<HomePageState> {
   @override
   build() {
-    final tasks = ref.watch(taskServiceProvider);
 
-    return (todos: tasks.tasks, isLoading: false);
+    AsyncValue.guard(() => ref.watch(taskServiceProvider.future)).then((data) {
+      state = (todos: data.value?.tasks ?? [], isLoading: false);
+    });
+
+    return (todos: [], isLoading: true);
   }
 
   void deleteTask(String taskId) async {
